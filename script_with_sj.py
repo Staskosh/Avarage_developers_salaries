@@ -27,76 +27,86 @@ def count_salary_for_all_pages(pages_avarage_salary):
     return avarage_salary
 
 
-def predict_rub_hh_salary(hh_url, payload, pages_mumber):
-    vacancy_info = {}
-    vacancies_processed = 0
-    pages_average_salary = []
-    for number in range(pages_mumber):
-        payload['page'] = number
-        response = requests.get(hh_url, params=payload)
-        response.raise_for_status()
-        for salary in response.json()['items']:
-          if salary['salary']['currency'] == 'RUR':
-            if salary['salary'] is None:
-              pass
-            elif salary['salary']['from'] and salary['salary']['to']:
-              vacancies_processed += 1
-              average_salary = (int(salary['salary']['from'])+int(salary['salary']['to']))/2
-              vacancy_info['average_salary'] = int(average_salary)
-            elif salary['salary']['from'] is not None:
-              vacancies_processed += 1
-              average_salary = int(salary['salary']['from'])*1.2
-              vacancy_info['average_salary'] = int(average_salary)
-            elif salary['salary']['to'] is not None:
-              vacancies_processed += 1
-              average_salary = int(salary['salary']['to'])*0.8
-              vacancy_info['average_salary'] = int(average_salary)
-            print(average_salary)
-            pages_average_salary.append(average_salary)
-    average_salary = count_salary_for_all_pages(pages_average_salary)
-    print('страница', average_salary)
-    vacancies_found = response.json()['found']
-    vacancy_info['vacancies_found'] = vacancies_found
-    vacancy_info['vacancies_processed'] = vacancies_processed
-    vacancy_info['average_salary'] = int(average_salary)
-    return vacancy_info
+def predict_salary(salary_from, salary_to):
+    if salary_from and salary_to:
+        average_salary = (int(salary_to) + int(salary_to)) / 2
+    elif salary_from is not None or salary_from == 0:
+        average_salary = int(salary_from) * 1.2
+    elif salary_to is not None or salary_to == 0:
+        average_salary = int(salary_to) * 0.8
+    print(average_salary)
+    return average_salary
 
 
-def predict_rub_sj_salary(sj_url, headers, payload, pages_number):
-    vacancy_info = {}
+def get_hh_salaries(hh_url, payload, pages_number):
     vacancies_processed = 0
     pages_average_salary = []
     for number in range(pages_number):
         payload['page'] = number
-        response = requests.get(sj_url, headers=headers, params=payload)
+        print(payload)
+        response = requests.get(hh_url, params=payload)
+        print(response.text)
+        vacancies = response.json()['items']
         response.raise_for_status()
-        for salary in response.json()['objects']:
+        for salary in vacancies:
+            if not salary['salary']:
+                continue
+            elif salary['salary']['currency'] == 'RUR':
+                salary_from = salary['salary']['from']
+                salary_to = salary['salary']['to']
+                average_salary = predict_salary(salary_from, salary_to)
+                vacancies_processed += 1
+                pages_average_salary.append(average_salary)
+    return pages_average_salary, response, vacancies_processed
+
+
+def get_sj_salaries(sj_url, headers, payload, pages_number):
+    vacancies_processed = 0
+    pages_average_salary = []
+    print('страниц', range(pages_number))
+    #for number in range(pages_number):
+    more = True
+    while more
+        payload['page'] = number
+        response = requests.get(sj_url, headers=headers, params=payload)
+        more = response.json()['more']
+        vacancies = response.json()['objects']
+        response.raise_for_status()
+        for salary in vacancies:
           if salary['currency'] == 'rub':
             salary_from = salary['payment_from']
             salary_to = salary['payment_to']
-            if (salary_from is None and salary_to is None) or (salary_from == 0 and salary_to == 0):
-              pass
-            elif salary_from and salary_to:
-              vacancies_processed += 1
-              average_salary = (int(salary_to)+int(salary_to))/2
-              vacancy_info['average_salary'] = int(average_salary)
-            elif salary_from is not None or salary_from == 0:
-              vacancies_processed += 1
-              average_salary = int(salary_from)*1.2
-              vacancy_info['average_salary'] = int(average_salary)
-            elif salary_to is not None or salary_to == 0:
-              vacancies_processed += 1
-              average_salary = int(salary_to)*0.8
-              vacancy_info['average_salary'] = int(average_salary)
-            print(average_salary)
+            average_salary = predict_salary(salary_from, salary_to)
+            vacancies_processed += 1
             pages_average_salary.append(average_salary)
-    average_salary = count_salary_for_all_pages(pages_average_salary)
-    print('страница', number, average_salary)
-    vacancies_found = response.json()['total']
-    vacancy_info['vacancies_found'] = vacancies_found
-    vacancy_info['vacancies_processed'] = vacancies_processed
-    vacancy_info['average_salary'] = int(average_salary)
-    return vacancy_info
+            print(average_salary)
+        return pages_average_salary, response, vacancies_processed
+
+
+def predict_rub_hh_salary(hh_url, payload, pages_number):
+    vacancy_info = {}
+    pages_average_salary, response, vacancies_processed = get_hh_salaries(hh_url, payload, pages_number)
+    if len(pages_average_salary) != 0:
+        average_salary = count_salary_for_all_pages(pages_average_salary)
+        print('новая профессия', average_salary)
+        vacancies_found = response.json()['found']
+        vacancy_info['vacancies_found'] = vacancies_found
+        vacancy_info['vacancies_processed'] = vacancies_processed
+        vacancy_info['average_salary'] = int(average_salary)
+        return vacancy_info
+
+
+def predict_rub_sj_salary(sj_url, headers, payload, pages_number):
+    vacancy_info = {}
+    pages_average_salary, response, vacancies_processed = get_sj_salaries(sj_url, headers, payload, pages_number)
+    if len(pages_average_salary) != 0:
+        average_salary = count_salary_for_all_pages(pages_average_salary)
+        vacancies_found = response.json()['total']
+        print('страница', average_salary, 'найдено', pages_number)
+        vacancy_info['vacancies_found'] = vacancies_found
+        vacancy_info['vacancies_processed'] = vacancies_processed
+        vacancy_info['average_salary'] = int(average_salary)
+        return vacancy_info
 
 
 def get_average_hh_salaries(hh_url, positions):
