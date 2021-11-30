@@ -1,4 +1,4 @@
-Programming vacancies compare
+#Programming vacancies compare
 
 This script will allow you to find out the average salary of software developers for different programming languages.
 The information is taken from public access on the [HeadHunter](http://hh.ru) and [Superjob](https:superjob.ru)
