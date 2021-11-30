@@ -13,11 +13,11 @@ SJ_TOKEN = 'Here's the secret key'
 ```
 - Create a [virtual environment](https://python-scripts.com/virtualenv) for the project
 - Install dependencies
-```bash
+```python 
 pip install -r requirements.txt
 ```
 - Run the script
-```bash
+```python
 python developers_salaries.py
 ````
 ## Project Goals
@@ -41,11 +41,11 @@ SJ_TOKEN = 'Тут секретный ключ'
 ```
 - Создай [виртуальное окружение](https://python-scripts.com/virtualenv) для проекта
 - Установи зависимости
-```bash
+```python
 pip install -r requirements.txt
 ```
 - Запусти скрипт
-```bash
+```python
 python developers_salaries.py
 ```
 ## Цель проекта
