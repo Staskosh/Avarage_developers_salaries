@@ -5,8 +5,6 @@ import requests
 from dotenv import load_dotenv
 from terminaltables import AsciiTable
 
-load_dotenv()
-
 
 def predict_salary(salary_from, salary_to):
     if not salary_from and salary_to:
@@ -134,6 +132,7 @@ def print_tables(sj_average_salaries, source):
 
 
 def main():
+    load_dotenv()
     positions = [
         'Программист JavaScript', 'Программист Java',
         'Программист Python', 'Программист PHP',
