@@ -23,14 +23,14 @@ python developers_salaries.py
 
 ## Project Goals
 
-The code is written for educational purposes on online-course for web-developers dvmn.org.
+The code is written for educational purposes on online-course for web-developers [Devman](https://dvmn.org).
 
 
 
 ## Сравниваем вакансии программистов
 
 Данный скрипт позволит узнать усредненную зарплату разработчиков ПО для разных языков программирования.
-Информация взята из публичного доступа на сайтах [HeadHunter](HH.ruhttps://hh.ru) и [Superjob](https:superjob.ru).
+Информация взята из публичного доступа на сайтах [HeadHunter](HH.ruhttps://hh.ru) и [Superjob](https://superjob.ru).
 
 ## Как установить
 
@@ -51,4 +51,4 @@ python developers_salaries.py
 ```
 ## Цель проекта
 
-Код написан в образовательных целях на онлайн-курсе для веб-разработчиков dvmn.org.
+Код написан в образовательных целях на онлайн-курсе для веб-разработчиков Devman](https://dvmn.org).
