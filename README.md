@@ -1,22 +1,22 @@
 ##Programming vacancies compare
 
 This script will allow you to find out the average salary of software developers for different programming languages.
-The information is taken from public access on the [HeadHunter](http://hh.ru) and [Superjob](https:superjob.ru)
+The information is taken from public access on the [HeadHunter](http://hh.ru) and [Superjob](https:superjob.ru).
 
 ##How to install
 
-- Download the program to your computer
-- Get the key to [Superjob API](https://api.superjob.ru )
-- Create a .env file and specify the Superjob secret key
+- Download the program to your computer.
+- Get the key to [Superjob API](https://api.superjob.ru).
+- Create a .env file and specify the Superjob secret key.
 ```buildoutcfg
 SJ_TOKEN = 'Here's the secret key'
 ```
-- Create a [virtual environment](https://python-scripts.com/virtualenv) for the project
-- Install dependencies
+- Create a [virtual environment](https://python-scripts.com/virtualenv) for the project.
+- Install dependencies.
 ```bash
 pip install -r requirements.txt
 ```
-- Run the script
+- Run the script.
 ```bash
 python developers_salaries.py
 ````
@@ -29,7 +29,7 @@ The code is written for educational purposes on online-course for web-developers
 ##Сравниваем вакансии программистов
 
 Данный скрипт позволит узнать усредненную зарплату разработчиков ПО для разных языков программирования.
-Информация взята из публичного доступа на сайтах [HeadHunter](HH.ruhttps://hh.ru) и [Superjob](https:superjob.ru)
+Информация взята из публичного доступа на сайтах [HeadHunter](HH.ruhttps://hh.ru) и [Superjob](https:superjob.ru).
 
 ##Как установить
 
