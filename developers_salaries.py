@@ -35,7 +35,6 @@ def get_sj_salaries(sj_secret_key, position):
         response.raise_for_status()
         page = response.json()
         vacancies = page['objects']
-        vacancies_found = page['total']
         for salary in vacancies:
             if not salary['currency'] == 'rub':
                 continue
@@ -47,6 +46,7 @@ def get_sj_salaries(sj_secret_key, position):
                 vacancies_processed += 1
         if not page['more']:
             break
+    vacancies_found = page['total']
     return salary_sum, vacancies_processed, vacancies_found
 
 
@@ -60,16 +60,17 @@ def get_hh_salary(position):
         'specialization': development_programing,
         'period': month,
         'area': Moscow,
+        #'only_with_salary': 'true',
     }
     salary_sum = 0
     vacancies_processed = 0
     for page_number in count(0):
         payload['page'] = page_number
+        print(page_number)
         response = requests.get(hh_url, params=payload)
         response.raise_for_status()
         page = response.json()
         vacancies = page['items']
-        vacancies_found = page['found']
         total_pages = page['pages']
         for salary in vacancies:
             if not salary['salary']:
@@ -81,8 +82,9 @@ def get_hh_salary(position):
                 if predicted_salary:
                     salary_sum += predicted_salary
                     vacancies_processed += 1
-        if page_number > total_pages:
+        if page_number > total_pages or page_number >= 99:
             break
+    vacancies_found = page['found']
     return salary_sum, vacancies_processed, vacancies_found
 
 
