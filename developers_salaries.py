@@ -15,6 +15,16 @@ def predict_salary(salary_from, salary_to):
         return (salary_from + salary_to) / 2
 
 
+def calculate_sj_salary(salary, salary_sum, vacancies_processed):
+    salary_from = salary['payment_from']
+    salary_to = salary['payment_to']
+    predicted_salary = predict_salary(salary_from, salary_to)
+    if predicted_salary:
+        salary_sum += predicted_salary
+        vacancies_processed += 1
+    return salary_sum, vacancies_processed
+
+
 def get_sj_salaries(sj_secret_key, position):
     sj_url = 'https://api.superjob.ru/2.0/vacancies/'
     development_and_programing = 48
@@ -38,17 +48,22 @@ def get_sj_salaries(sj_secret_key, position):
         for salary in vacancies:
             if not salary['currency'] == 'rub':
                 continue
-            salary_from = salary['payment_from']
-            salary_to = salary['payment_to']
-            predicted_salary = predict_salary(salary_from, salary_to)
-            if predicted_salary:
-                salary_sum += predicted_salary
-                vacancies_processed += 1
+            salary_sum, vacancies_processed = calculate_sj_salary(salary, salary_sum, vacancies_processed)
         if not page['more']:
             break
     vacancies_found = page['total']
     return salary_sum, vacancies_processed, vacancies_found
 
+
+def calculate_hh_salary(salary, salary_sum, vacancies_processed):
+    if salary['salary']['currency'] == 'RUR':
+        salary_from = salary['salary']['from']
+        salary_to = salary['salary']['to']
+        predicted_salary = predict_salary(salary_from, salary_to)
+        if predicted_salary:
+            salary_sum += predicted_salary
+            vacancies_processed += 1
+    return salary_sum, vacancies_processed
 
 def get_hh_salary(position):
     hh_url = 'https://api.hh.ru/vacancies'
@@ -60,7 +75,6 @@ def get_hh_salary(position):
         'specialization': development_programing,
         'period': month,
         'area': Moscow,
-        #'only_with_salary': 'true',
     }
     salary_sum = 0
     vacancies_processed = 0
@@ -75,13 +89,7 @@ def get_hh_salary(position):
         for salary in vacancies:
             if not salary['salary']:
                 continue
-            elif salary['salary']['currency'] == 'RUR':
-                salary_from = salary['salary']['from']
-                salary_to = salary['salary']['to']
-                predicted_salary = predict_salary(salary_from, salary_to)
-                if predicted_salary:
-                    salary_sum += predicted_salary
-                    vacancies_processed += 1
+            salary_sum, vacancies_processed = calculate_hh_salary(salary, salary_sum, vacancies_processed)
         if page_number > total_pages or page_number >= 99:
             break
     vacancies_found = page['found']
