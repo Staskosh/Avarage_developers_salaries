@@ -56,13 +56,12 @@ def get_sj_salaries(sj_secret_key, position):
 
 
 def calculate_hh_salary(salary, salary_sum, vacancies_processed):
-    if salary['salary']['currency'] == 'RUR':
-        salary_from = salary['salary']['from']
-        salary_to = salary['salary']['to']
-        predicted_salary = predict_salary(salary_from, salary_to)
-        if predicted_salary:
-            salary_sum += predicted_salary
-            vacancies_processed += 1
+    salary_from = salary['salary']['from']
+    salary_to = salary['salary']['to']
+    predicted_salary = predict_salary(salary_from, salary_to)
+    if predicted_salary:
+        salary_sum += predicted_salary
+        vacancies_processed += 1
     return salary_sum, vacancies_processed
 
 def get_hh_salary(position):
@@ -87,7 +86,7 @@ def get_hh_salary(position):
         vacancies = page['items']
         total_pages = page['pages']
         for salary in vacancies:
-            if not salary['salary']:
+            if not salary['salary'] or not salary['salary']['currency'] == 'RUR':
                 continue
             salary_sum, vacancies_processed = calculate_hh_salary(salary, salary_sum, vacancies_processed)
         if page_number > total_pages or page_number >= 99:
