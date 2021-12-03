@@ -11,7 +11,8 @@ def predict_salary(salary_from, salary_to):
         return salary_to * 0.8
     elif salary_from and not salary_to:
         return salary_from * 1.2
-    return (salary_from + salary_to) / 2
+    elif salary_to and salary_from:
+        return (salary_from + salary_to) / 2
 
 
 def get_sj_salaries(sj_secret_key, position):
@@ -26,7 +27,6 @@ def get_sj_salaries(sj_secret_key, position):
     }
     salary_sum = 0
     vacancies_processed = 0
-    vacancies_found = 0
     for page_number in count(0):
         payload['page'] = page_number
         response = requests.get(sj_url, headers=headers, params=payload)
@@ -59,7 +59,6 @@ def get_hh_salary(position):
     }
     salary_sum = 0
     vacancies_processed = 0
-    vacancies_found = 0
     for page_number in count(0):
         payload['page'] = page_number
         response = requests.get(hh_url, params=payload)
@@ -98,9 +97,7 @@ def get_average_hh_salaries(positions):
 def get_average_sj_salaries(positions, sj_secret_key):
     vacancies_info = {}
     for position in positions:
-        salary_sum,
-        vacancies_processed,
-        vacancies_found = get_sj_salaries(sj_secret_key, position)
+        salary_sum, vacancies_processed, vacancies_found = get_sj_salaries(sj_secret_key, position)
         vacancies_info[position] = {
             'vacancies_found': vacancies_found,
             'vacancies_processed': vacancies_processed,
