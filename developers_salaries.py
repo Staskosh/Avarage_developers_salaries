@@ -17,13 +17,15 @@ def predict_salary(salary_from, salary_to):
 
 def get_sj_salaries(sj_secret_key, position):
     sj_url = 'https://api.superjob.ru/2.0/vacancies/'
+    development_and_programing = 48
+    Moscow = 4
     headers = {
         'X-Api-App-Id': sj_secret_key
     }
     payload = {
         'keyword': position,
-        'catalogues': 48,
-        'town': 4,
+        'catalogues': development_and_programing,
+        'town': Moscow,
     }
     salary_sum = 0
     vacancies_processed = 0
@@ -50,12 +52,14 @@ def get_sj_salaries(sj_secret_key, position):
 
 def get_hh_salary(position):
     hh_url = 'https://api.hh.ru/vacancies'
+    development_programing = '1.221'
+    month = '31'
+    Moscow  = '1'
     payload = {
         'text': position,
-        'only_with_salary': 'true',
-        'specialization': '1.221',
-        'period': '31',
-        'area': '1',
+        'specialization': development_programing,
+        'period': month,
+        'area': Moscow,
     }
     salary_sum = 0
     vacancies_processed = 0
