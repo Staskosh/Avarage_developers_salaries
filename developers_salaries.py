@@ -28,14 +28,14 @@ def calculate_sj_salary(vacancy, salary_sum, vacancies_processed):
 def get_sj_salaries(sj_secret_key, position):
     sj_url = 'https://api.superjob.ru/2.0/vacancies/'
     development_and_programing = 48
-    Moscow = 4
+    moscow = 4
     headers = {
         'X-Api-App-Id': sj_secret_key
     }
     payload = {
         'keyword': position,
         'catalogues': development_and_programing,
-        'town': Moscow,
+        'town': moscow,
     }
     salary_sum = 0
     vacancies_processed = 0
@@ -68,12 +68,12 @@ def get_hh_salary(position):
     hh_url = 'https://api.hh.ru/vacancies'
     development_programing = '1.221'
     month = '31'
-    Moscow  = '1'
+    moscow  = '1'
     payload = {
         'text': position,
         'specialization': development_programing,
         'period': month,
-        'area': Moscow,
+        'area': moscow,
     }
     salary_sum = 0
     vacancies_processed = 0
@@ -96,31 +96,31 @@ def get_hh_salary(position):
 
 
 def get_average_hh_salaries(positions):
-    vacancies_info = {}
+    vacancies = {}
     for position in positions:
         salary_sum, vacancies_processed, vacancies_found = get_hh_salary(position)
-        vacancies_info[position] = {
+        vacancies[position] = {
             'vacancies_found': vacancies_found,
             'vacancies_processed': vacancies_processed,
             'average_salary': int(salary_sum / vacancies_processed)
         }
-    return vacancies_info
+    return vacancies
 
 
 def get_average_sj_salaries(positions, sj_secret_key):
-    vacancies_info = {}
+    vacancies = {}
     for position in positions:
         salary_sum, vacancies_processed, vacancies_found = get_sj_salaries(sj_secret_key, position)
-        vacancies_info[position] = {
+        vacancies[position] = {
             'vacancies_found': vacancies_found,
             'vacancies_processed': vacancies_processed,
             'average_salary': int(salary_sum / vacancies_processed)
         }
-    return vacancies_info
+    return vacancies
 
 
 def print_tables(sj_average_salaries, source):
-    table_data = [
+    table = [
         [source, 'Moscow'],
         [
             'Язык программирования',
@@ -129,15 +129,15 @@ def print_tables(sj_average_salaries, source):
             'Средняя зарплата',
         ],
     ]
-    for position, salary_statistics in sj_average_salaries.items():
+    for position, statistics in sj_average_salaries.items():
         position_salariy = [
             position,
-            salary_statistics['vacancies_found'],
-            salary_statistics['vacancies_processed'],
-            salary_statistics['average_salary'],
+            statistics['vacancies_found'],
+            statistics['vacancies_processed'],
+            statistics['average_salary'],
         ]
-        table_data.append(position_salariy)
-    table = AsciiTable(table_data)
+        table.append(position_salariy)
+    table = AsciiTable(table)
     print(table.table)
 
 
