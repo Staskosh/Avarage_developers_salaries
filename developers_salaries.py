@@ -119,9 +119,9 @@ def get_average_sj_salaries(positions, sj_secret_key):
     return vacancies
 
 
-def print_tables(sj_average_salaries, source):
+def print_table(sj_average_salaries, source):
+    title = source + ' Moscow'
     table = [
-        [source, 'Moscow'],
         [
             'Язык программирования',
             'Вакансий найдено',
@@ -137,7 +137,7 @@ def print_tables(sj_average_salaries, source):
             statistics['average_salary'],
         ]
         table.append(position_salariy)
-    table = AsciiTable(table)
+    table = AsciiTable(table, title)
     print(table.table)
 
 
@@ -149,11 +149,11 @@ def main():
         'Программист C++', 'Программист C#',
         'Программист C', 'Программист Swift'
         ]
-    hh_salary_statistics = get_average_hh_salaries(positions)
+    #hh_salary_statistics = get_average_hh_salaries(positions)
     sj_secret_key = os.getenv('SJ_TOKEN')
     sj_salary_statistics = get_average_sj_salaries(positions, sj_secret_key)
-    print_vacancies = print_tables(sj_salary_statistics, 'Superjob')
-    print_vacancies = print_tables(hh_salary_statistics, 'HeadHunter')
+    print_vacancies = print_table(sj_salary_statistics, 'Superjob')
+    #print_vacancies = print_tables(hh_salary_statistics, 'HeadHunter')
 
 
 if __name__ == '__main__':
