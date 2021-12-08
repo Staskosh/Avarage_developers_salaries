@@ -15,9 +15,9 @@ def predict_salary(salary_from, salary_to):
         return (salary_from + salary_to) / 2
 
 
-def calculate_sj_salary(salary, salary_sum, vacancies_processed):
-    salary_from = salary['payment_from']
-    salary_to = salary['payment_to']
+def calculate_sj_salary(vacancy, salary_sum, vacancies_processed):
+    salary_from = vacancy['payment_from']
+    salary_to = vacancy['payment_to']
     predicted_salary = predict_salary(salary_from, salary_to)
     if predicted_salary:
         salary_sum += predicted_salary
@@ -45,19 +45,19 @@ def get_sj_salaries(sj_secret_key, position):
         response.raise_for_status()
         page = response.json()
         vacancies = page['objects']
-        for salary in vacancies:
-            if not salary['currency'] == 'rub':
+        for vacancy in vacancies:
+            if not vacancy['currency'] == 'rub':
                 continue
-            salary_sum, vacancies_processed = calculate_sj_salary(salary, salary_sum, vacancies_processed)
+            salary_sum, vacancies_processed = calculate_sj_salary(vacancy, salary_sum, vacancies_processed)
         if not page['more']:
             break
     vacancies_found = page['total']
     return salary_sum, vacancies_processed, vacancies_found
 
 
-def calculate_hh_salary(salary, salary_sum, vacancies_processed):
-    salary_from = salary['salary']['from']
-    salary_to = salary['salary']['to']
+def calculate_hh_salary(vacancy, salary_sum, vacancies_processed):
+    salary_from = vacancy['salary']['from']
+    salary_to = vacancy['salary']['to']
     predicted_salary = predict_salary(salary_from, salary_to)
     if predicted_salary:
         salary_sum += predicted_salary
@@ -85,11 +85,11 @@ def get_hh_salary(position):
         page = response.json()
         vacancies = page['items']
         total_pages = page['pages']
-        for salary in vacancies:
-            if not salary['salary'] or not salary['salary']['currency'] == 'RUR':
+        for vacancy in vacancies:
+            if not vacancy['salary'] or not vacancy['salary']['currency'] == 'RUR':
                 continue
-            salary_sum, vacancies_processed = calculate_hh_salary(salary, salary_sum, vacancies_processed)
-        if page_number > total_pages or page_number >= 99:
+            salary_sum, vacancies_processed = calculate_hh_salary(vacancy, salary_sum, vacancies_processed)
+        if page_number >= total_pages or page_number >= 99:
             break
     vacancies_found = page['found']
     return salary_sum, vacancies_processed, vacancies_found
@@ -129,12 +129,12 @@ def print_tables(sj_average_salaries, source):
             'Средняя зарплата',
         ],
     ]
-    for position, salary in sj_average_salaries.items():
+    for position, salary_statistics in sj_average_salaries.items():
         position_salariy = [
             position,
-            salary['vacancies_found'],
-            salary['vacancies_processed'],
-            salary['average_salary'],
+            salary_statistics['vacancies_found'],
+            salary_statistics['vacancies_processed'],
+            salary_statistics['average_salary'],
         ]
         table_data.append(position_salariy)
     table = AsciiTable(table_data)
