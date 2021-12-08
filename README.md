@@ -22,5 +22,5 @@ python developers_salaries.py
 ```
 ## Цель проекта
 
-Код написан в образовательных целях на онлайн-курсе для веб-разработчиков Devman](https://dvmn.org).
+Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [Devman](https://dvmn.org).
 Прочитать [английскую версию](https://github.com/Staskosh/Avarage_developers_salaries/blob/main/README_ENG.md)
