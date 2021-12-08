@@ -138,7 +138,7 @@ def print_table(sj_average_salaries, source):
         ]
         table.append(position_salariy)
     table = AsciiTable(table, title)
-    print(table.table)
+    return table
 
 
 def main():
@@ -152,7 +152,7 @@ def main():
     #hh_salary_statistics = get_average_hh_salaries(positions)
     sj_secret_key = os.getenv('SJ_TOKEN')
     sj_salary_statistics = get_average_sj_salaries(positions, sj_secret_key)
-    print_vacancies = print_table(sj_salary_statistics, 'Superjob')
+    print(print_table(sj_salary_statistics, 'Superjob').table)
     #print_vacancies = print_tables(hh_salary_statistics, 'HeadHunter')
 
 
