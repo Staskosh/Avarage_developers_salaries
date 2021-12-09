@@ -15,14 +15,11 @@ def predict_salary(salary_from, salary_to):
         return (salary_from + salary_to) / 2
 
 
-def calculate_sj_salary(vacancy, salary_sum, vacancies_processed):
+def calculate_sj_salary(vacancy):
     salary_from = vacancy['payment_from']
     salary_to = vacancy['payment_to']
     predicted_salary = predict_salary(salary_from, salary_to)
-    if predicted_salary:
-        salary_sum += predicted_salary
-        vacancies_processed += 1
-    return salary_sum, vacancies_processed
+    return predicted_salary
 
 
 def get_sj_salaries(sj_secret_key, position):
@@ -48,21 +45,22 @@ def get_sj_salaries(sj_secret_key, position):
         for vacancy in vacancies:
             if not vacancy['currency'] == 'rub':
                 continue
-            salary_sum, vacancies_processed = calculate_sj_salary(vacancy, salary_sum, vacancies_processed)
+            predicted_salary = calculate_sj_salary(vacancy)
+            if predicted_salary:
+                salary_sum += predicted_salary
+                vacancies_processed += 1
         if not page['more']:
             break
     vacancies_found = page['total']
     return salary_sum, vacancies_processed, vacancies_found
 
 
-def calculate_hh_salary(vacancy, salary_sum, vacancies_processed):
+def calculate_hh_salary(vacancy):
     salary_from = vacancy['salary']['from']
     salary_to = vacancy['salary']['to']
     predicted_salary = predict_salary(salary_from, salary_to)
-    if predicted_salary:
-        salary_sum += predicted_salary
-        vacancies_processed += 1
-    return salary_sum, vacancies_processed
+    return predicted_salary
+
 
 def get_hh_salary(position):
     hh_url = 'https://api.hh.ru/vacancies'
@@ -88,7 +86,10 @@ def get_hh_salary(position):
         for vacancy in vacancies:
             if not vacancy['salary'] or not vacancy['salary']['currency'] == 'RUR':
                 continue
-            salary_sum, vacancies_processed = calculate_hh_salary(vacancy, salary_sum, vacancies_processed)
+            predicted_salary = calculate_hh_salary(vacancy)
+            if predicted_salary:
+                salary_sum += predicted_salary
+                vacancies_processed += 1
         if page_number >= total_pages - 1:
             break
     vacancies_found = page['found']
@@ -152,7 +153,7 @@ def main():
     hh_salary_statistics = get_average_hh_salaries(positions)
     sj_secret_key = os.getenv('SJ_TOKEN')
     sj_salary_statistics = get_average_sj_salaries(positions, sj_secret_key)
-    #print(print_table(sj_salary_statistics, 'Superjob').table)
+    print(print_table(sj_salary_statistics, 'Superjob').table)
     print(print_table(hh_salary_statistics, 'HeadHunter').table)
 
 
