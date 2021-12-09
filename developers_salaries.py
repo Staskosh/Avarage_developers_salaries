@@ -77,7 +77,6 @@ def get_hh_salary(position):
     vacancies_processed = 0
     for page_number in count(0):
         payload['page'] = page_number
-        print(page_number)
         response = requests.get(hh_url, params=payload)
         response.raise_for_status()
         page = response.json()
