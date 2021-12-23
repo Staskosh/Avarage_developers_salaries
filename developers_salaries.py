@@ -99,11 +99,12 @@ def get_average_hh_salaries(positions):
     vacancies = {}
     for position in positions:
         salary_sum, vacancies_processed, vacancies_found = get_hh_salary(position)
-        vacancies[position] = {
-            'vacancies_found': vacancies_found,
-            'vacancies_processed': vacancies_processed,
-            'average_salary': int(salary_sum / vacancies_processed)
-        }
+        if vacancies_processed:
+            vacancies[position] = {
+                'vacancies_found': vacancies_found,
+                'vacancies_processed': vacancies_processed,
+                'average_salary': int(salary_sum / vacancies_processed)
+            }
     return vacancies
 
 
@@ -111,11 +112,12 @@ def get_average_sj_salaries(positions, sj_secret_key):
     vacancies = {}
     for position in positions:
         salary_sum, vacancies_processed, vacancies_found = get_sj_salaries(sj_secret_key, position)
-        vacancies[position] = {
-            'vacancies_found': vacancies_found,
-            'vacancies_processed': vacancies_processed,
-            'average_salary': int(salary_sum / vacancies_processed)
-        }
+        if vacancies_processed:
+            vacancies[position] = {
+                'vacancies_found': vacancies_found,
+                'vacancies_processed': vacancies_processed,
+                'average_salary': int(salary_sum / vacancies_processed)
+            }
     return vacancies
 
 
