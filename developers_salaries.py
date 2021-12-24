@@ -120,7 +120,7 @@ def get_average_sj_salaries(positions, sj_secret_key):
     return vacancies
 
 
-def print_table(sj_average_salaries, source):
+def create_table(average_salaries, source):
     title = source + ' Moscow'
     table = [
         [
@@ -130,7 +130,7 @@ def print_table(sj_average_salaries, source):
             'Средняя зарплата',
         ],
     ]
-    for position, statistics in sj_average_salaries.items():
+    for position, statistics in average_salaries.items():
         position_salariy = [
             position,
             statistics['vacancies_found'],
@@ -153,8 +153,8 @@ def main():
     hh_salary_statistics = get_average_hh_salaries(positions)
     sj_secret_key = os.getenv('SJ_TOKEN')
     sj_salary_statistics = get_average_sj_salaries(positions, sj_secret_key)
-    print(print_table(sj_salary_statistics, 'Superjob').table)
-    print(print_table(hh_salary_statistics, 'HeadHunter').table)
+    print(create_table(sj_salary_statistics, 'Superjob').table)
+    print(create_table(hh_salary_statistics, 'HeadHunter').table)
 
 
 if __name__ == '__main__':
