@@ -16,10 +16,11 @@ def predict_salary(salary_from, salary_to):
 
 
 def calculate_sj_salary(vacancy):
-    salary_from = vacancy['payment_from']
-    salary_to = vacancy['payment_to']
-    predicted_salary = predict_salary(salary_from, salary_to)
-    return predicted_salary
+    if vacancy['currency'] == 'rub':
+        salary_from = vacancy['payment_from']
+        salary_to = vacancy['payment_to']
+        predicted_salary = predict_salary(salary_from, salary_to)
+        return predicted_salary
 
 
 def get_sj_salaries(sj_secret_key, position):
@@ -43,8 +44,6 @@ def get_sj_salaries(sj_secret_key, position):
         page = response.json()
         vacancies = page['objects']
         for vacancy in vacancies:
-            if not vacancy['currency'] == 'rub':
-                continue
             predicted_salary = calculate_sj_salary(vacancy)
             if predicted_salary:
                 salary_sum += predicted_salary
@@ -56,10 +55,11 @@ def get_sj_salaries(sj_secret_key, position):
 
 
 def calculate_hh_salary(vacancy):
-    salary_from = vacancy['salary']['from']
-    salary_to = vacancy['salary']['to']
-    predicted_salary = predict_salary(salary_from, salary_to)
-    return predicted_salary
+    if vacancy['salary'] and vacancy['salary']['currency'] == 'RUR':
+        salary_from = vacancy['salary']['from']
+        salary_to = vacancy['salary']['to']
+        predicted_salary = predict_salary(salary_from, salary_to)
+        return predicted_salary
 
 
 def get_hh_salary(position):
@@ -83,8 +83,7 @@ def get_hh_salary(position):
         vacancies = page['items']
         total_pages = page['pages']
         for vacancy in vacancies:
-            if not vacancy['salary'] or not vacancy['salary']['currency'] == 'RUR':
-                continue
+
             predicted_salary = calculate_hh_salary(vacancy)
             if predicted_salary:
                 salary_sum += predicted_salary
